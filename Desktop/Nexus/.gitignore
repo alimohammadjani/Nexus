@@ -1,0 +1,141 @@
+# ============================================================
+# PYTHON / BACKEND
+# ============================================================
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+.eggs/
+
+# Test & coverage
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+
+# Alembic (نگه‌دار، فقط این‌ها رو ignore کن)
+# alembic/versions/*.pyc  ← خودکار ignore میشه با __pycache__
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# ============================================================
+# ENVIRONMENT & SECRETS  ← مهم‌ترین بخش
+# ============================================================
+
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+secrets/
+config/local_*.py
+
+# ============================================================
+# DATABASE
+# ============================================================
+
+*.db
+*.sqlite3
+*.sqlite
+dump.sql
+*.sql.gz
+
+# ============================================================
+# FRONTEND (React / Node)
+# ============================================================
+
+node_modules/
+dist/
+build/
+.next/
+.nuxt/
+.cache/
+
+# Package manager locks (یکی رو نگه‌دار، بقیه ignore)
+# اگه npm: package-lock.json رو کامیت کن، yarn.lock رو ignore کن
+yarn.lock
+# package-lock.json
+
+# TypeScript
+*.tsbuildinfo
+
+# Vite / CRA cache
+.vite/
+
+# ============================================================
+# DOCKER
+# ============================================================
+
+# Override فایل local رو نگه‌دار، کامیت نکن
+docker-compose.override.yml
+
+# ============================================================
+# LOGS & TEMP
+# ============================================================
+
+logs/
+*.log
+*.log.*
+tmp/
+temp/
+.tmp/
+
+# ============================================================
+# UPLOADS & MEDIA (فایل‌های user رو S3 نگه می‌داری)
+# ============================================================
+
+media/
+uploads/
+static/collected/
+
+# ============================================================
+# IDE & OS
+# ============================================================
+
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================================
+# CI/CD & INFRA
+# ============================================================
+
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+
+# Sentry
+.sentryclirc
+
+# ============================================================
+# TESTING
+# ============================================================
+
+test-results/
+playwright-report/
