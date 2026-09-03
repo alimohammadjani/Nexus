@@ -904,7 +904,11 @@
 
 /* --- Roadmap cards entrance --- */
 .rm-card {
+<<<<<<< HEAD
   animation: cardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+=======
+  animation: cardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+>>>>>>> origin/arena/01a056dc-nexus
 }
 
 .rm-card:hover {
@@ -933,7 +937,11 @@
 
 /* --- Interactive graph --- */
 .roadmap-canvas {
+<<<<<<< HEAD
   animation: fadeUp 0.6s ease both;
+=======
+  animation: fadeUp 0.6s ease backwards;
+>>>>>>> origin/arena/01a056dc-nexus
   background-image: radial-gradient(color-mix(in srgb, var(--accent) 16%, transparent) 1px, transparent 1px);
   background-size: 26px 26px;
   background-position: center;
@@ -941,11 +949,19 @@
 }
 
 .roadmap-connector {
+<<<<<<< HEAD
   animation: connectorIn 0.6s ease both, connectorFlow 1.4s linear infinite;
 }
 
 .roadmap-node {
   animation: nodeIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+=======
+  animation: connectorIn 0.6s ease backwards, connectorFlow 1.4s linear infinite;
+}
+
+.roadmap-node {
+  animation: nodeIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+>>>>>>> origin/arena/01a056dc-nexus
 }
 
 .roadmap-node:hover {
@@ -966,7 +982,11 @@
 }
 
 .roadmap-list-item {
+<<<<<<< HEAD
   animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+=======
+  animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+>>>>>>> origin/arena/01a056dc-nexus
 }
 
 .roadmap-list-item:hover {
@@ -993,7 +1013,11 @@
 
 /* --- Training drawer layered reveal --- */
 .drawerAnim {
+<<<<<<< HEAD
   animation: drawerContentIn 0.42s ease both;
+=======
+  animation: drawerContentIn 0.42s ease backwards;
+>>>>>>> origin/arena/01a056dc-nexus
 }
 
 .drawer-head .roadmap-order {
@@ -1032,7 +1056,11 @@
 
 /* --- Course lesson rows --- */
 .lesson-row-item {
+<<<<<<< HEAD
   animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+=======
+  animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+>>>>>>> origin/arena/01a056dc-nexus
 }
 
 .lesson-main:hover .roadmap-order {
@@ -1042,11 +1070,19 @@
 /* --- Section titles reveal --- */
 .section-title,
 .learning-hero p {
+<<<<<<< HEAD
   animation: fadeUp 0.6s ease both;
 }
 
 .track-filter {
   animation: fadeUp 0.6s ease both;
+=======
+  animation: fadeUp 0.6s ease backwards;
+}
+
+.track-filter {
+  animation: fadeUp 0.6s ease backwards;
+>>>>>>> origin/arena/01a056dc-nexus
 }
 
 @media (prefers-reduced-motion: reduce) {
