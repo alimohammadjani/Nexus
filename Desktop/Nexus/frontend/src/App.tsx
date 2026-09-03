@@ -10,6 +10,7 @@ import JobList from './pages/jobs/JobList'
 import JobDetail from './pages/jobs/JobDetail'
 import PostJob from './pages/jobs/PostJob'
 import LearningRoadmap from './pages/learning/Roadmap'
+import RoadmapView from './pages/learning/RoadmapView'
 import Course from './pages/learning/Course'
 import Progress from './pages/learning/Progress'
 import MarketList from './pages/market/MarketList'
@@ -29,7 +30,7 @@ function AppRoutes() {
         <Route path="/jobs/new" element={<PostJob />} />
         <Route path="/jobs/:id" element={<JobDetail />} />
         <Route path="/learning" element={<LearningRoadmap />} />
-        <Route path="/learning/:id" element={<Course />} />
+        <Route path="/learning/roadmap/:id" element={<RoadmapView />} />
         <Route path="/learning/course/:id" element={<Course />} />
         <Route path="/learning/progress" element={<Progress />} />
         <Route path="/market" element={<MarketList />} />
