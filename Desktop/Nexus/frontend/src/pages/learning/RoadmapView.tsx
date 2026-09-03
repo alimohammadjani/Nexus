@@ -182,6 +182,7 @@ export default function RoadmapView() {
       {viewMode === 'graph' ? (
         <div className="roadmap-canvas-wrap">
           <div
+            key={roadmap.id}
             className="roadmap-canvas"
             style={{ width: layout.canvasWidth, height: layout.canvasHeight }}
           >
@@ -195,7 +196,7 @@ export default function RoadmapView() {
                 <path key={i} className="roadmap-connector" d={d} />
               ))}
             </svg>
-            {layout.positions.map(({ stage, x, y }) => {
+            {layout.positions.map(({ stage, x, y }, i) => {
               const done = completed.includes(stage.id)
               const isSelected = selected?.id === stage.id
               return (
@@ -203,7 +204,7 @@ export default function RoadmapView() {
                   key={stage.id}
                   type="button"
                   className={`roadmap-node ${done ? 'done' : ''} ${isSelected ? 'selected' : ''}`}
-                  style={{ left: x, top: y }}
+                  style={{ left: x, top: y, animationDelay: `${i * 70}ms` }}
                   onClick={() => openStage(stage)}
                 >
                   <div className="roadmap-node-top">
@@ -218,7 +219,7 @@ export default function RoadmapView() {
           </div>
         </div>
       ) : (
-        <div className="roadmap-list">
+        <div className="roadmap-list" key={roadmap.id}>
           {roadmap.stages.map((stage) => {
             const done = completed.includes(stage.id)
             return (
@@ -244,7 +245,7 @@ export default function RoadmapView() {
       <aside className={`training-drawer ${drawerOpen ? 'open' : ''}`} aria-hidden={!drawerOpen}>
         {selected && (
           <>
-            <div className="drawer-head">
+            <div key={selected.id} className="drawer-head drawerAnim">
               <span className="roadmap-order">{selected.order}</span>
               <div>
                 <h2>{selected.title}</h2>
@@ -255,7 +256,7 @@ export default function RoadmapView() {
               </button>
             </div>
 
-            <div className="drawer-body">
+            <div key={selected.id} className="drawer-body drawerAnim">
               {selected.content && (
                 <div className="training-section">
                   <span className="label">آموزش</span>
@@ -314,7 +315,7 @@ export default function RoadmapView() {
             </div>
 
             {selectedIndex >= 0 && (
-              <div className="drawer-nav">
+              <div key={selected.id} className="drawer-nav drawerAnim">
                 <button
                   type="button"
                   className="nav-btn"

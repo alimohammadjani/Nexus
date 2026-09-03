@@ -59,16 +59,16 @@ export default function Roadmap() {
           <h2 className="section-title">Roadmap ها</h2>
           <div className="rm-grid" style={{ marginBottom: 12 }}>
             {roadmaps.length === 0 && <div className="state-block">Roadmap یافت نشد.</div>}
-            {roadmaps.map((roadmap) => (
-              <RoadmapCard key={roadmap.id} roadmap={roadmap} />
+            {roadmaps.map((roadmap, i) => (
+              <RoadmapCard key={roadmap.id} roadmap={roadmap} index={i} />
             ))}
           </div>
 
           <h2 className="section-title">دوره‌های رایگان / پولی</h2>
           <div className="rm-grid">
             {courses.length === 0 && <div className="state-block">دوره‌ای یافت نشد.</div>}
-            {courses.map((course) => (
-              <CourseCard key={course.id} course={course} />
+            {courses.map((course, i) => (
+              <CourseCard key={course.id} course={course} index={i} />
             ))}
           </div>
         </>
@@ -77,7 +77,7 @@ export default function Roadmap() {
   )
 }
 
-function RoadmapCard({ roadmap }: { roadmap: RoadmapType }) {
+function RoadmapCard({ roadmap, index = 0 }: { roadmap: RoadmapType; index?: number }) {
   const accent = roadmap.color ?? '#8b5cf6'
   const icon = CATEGORY_ICON[roadmap.category] ?? '🧭'
   const preview = roadmap.stages.slice(0, 6)
@@ -85,7 +85,7 @@ function RoadmapCard({ roadmap }: { roadmap: RoadmapType }) {
     <Link
       className="rm-card"
       to={`/learning/roadmap/${roadmap.id}`}
-      style={{ '--accent': accent } as CSSProperties}
+      style={{ '--accent': accent, animationDelay: `${index * 90}ms` } as CSSProperties}
     >
       <div className="rm-card-head">
         <span className="rm-icon" style={{ background: accent }}>
@@ -120,12 +120,12 @@ function RoadmapCard({ roadmap }: { roadmap: RoadmapType }) {
   )
 }
 
-function CourseCard({ course }: { course: Course }) {
+function CourseCard({ course, index = 0 }: { course: Course; index?: number }) {
   return (
     <Link
       className="rm-card"
       to={`/learning/course/${course.id}`}
-      style={{ '--accent': '#06b6d4' } as CSSProperties}
+      style={{ '--accent': '#06b6d4', animationDelay: `${index * 90}ms` } as CSSProperties}
     >
       <div className="rm-card-head">
         <span className="rm-icon" style={{ background: '#06b6d4' }}>

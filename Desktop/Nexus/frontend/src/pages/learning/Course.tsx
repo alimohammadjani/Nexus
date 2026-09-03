@@ -119,10 +119,10 @@ export default function Course() {
       <div className="panel">
         <h2 className="panel-title">درس‌ها</h2>
         <div className="lesson-list">
-          {course.lessons.map((lesson) => {
+          {course.lessons.map((lesson, i) => {
             const done = doneLessons.includes(lesson.id)
             return (
-              <div className="lesson-row-item" key={lesson.id}>
+              <div className="lesson-row-item" key={lesson.id} style={{ animationDelay: `${i * 60}ms` }}>
                 <button type="button" className="lesson-main" onClick={() => openLesson(lesson)}>
                   <span className={`roadmap-order ${done ? 'done' : ''}`}>{lesson.order}</span>
                   <span className="lesson-info">
@@ -148,7 +148,7 @@ export default function Course() {
       <aside className={`training-drawer ${drawerOpen ? 'open' : ''}`} aria-hidden={!drawerOpen}>
         {selected && (
           <>
-            <div className="drawer-head">
+            <div key={selected.id} className="drawer-head drawerAnim">
               <div>
                 <h2>{selected.title}</h2>
                 <p className="help-text">{selected.duration_minutes} دقیقه مطالعه</p>
@@ -157,7 +157,7 @@ export default function Course() {
                 ✕
               </button>
             </div>
-            <div className="drawer-body">
+            <div key={selected.id} className="drawer-body drawerAnim">
               {selected.content ? (
                 <div className="training-section">
                   <span className="label">آموزش درس</span>
@@ -182,7 +182,7 @@ export default function Course() {
             </div>
 
             {selectedIndex >= 0 && (
-              <div className="drawer-nav">
+              <div key={selected.id} className="drawer-nav drawerAnim">
                 <button
                   type="button"
                   className="nav-btn"

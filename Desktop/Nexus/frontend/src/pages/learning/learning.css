@@ -838,3 +838,235 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================================
+   Animation layer — professional motion (entrance, hover, flow, shimmer)
+   ========================================================================= */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(26px) scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes nodeIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.92); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes drawerContentIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes connectorIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes connectorFlow {
+  to { stroke-dashoffset: -11; }
+}
+
+@keyframes shimmer {
+  to { transform: translateX(120%); }
+}
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes popRing {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); }
+  100% { box-shadow: 0 0 0 14px transparent; }
+}
+
+/* --- Landing hero --- */
+.learning-hero h1 {
+  background: linear-gradient(100deg, #fff 0%, color-mix(in srgb, var(--primary) 80%, #fff) 40%, #67e8f9 70%, #fff 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: gradientShift 6s linear infinite;
+}
+
+/* --- Roadmap cards entrance --- */
+.rm-card {
+  animation: cardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.rm-card:hover {
+  transform: translateY(-6px);
+}
+
+.rm-card .rm-icon {
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.rm-card:hover .rm-icon {
+  transform: translateY(-3px) rotate(-4deg);
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+/* mini node preview animates on hover */
+.rm-card:hover .rm-preview-node {
+  animation: floaty 2.4s ease-in-out infinite;
+}
+
+.rm-card:hover .rm-preview-line {
+  background: linear-gradient(var(--accent), var(--accent));
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 60%, transparent);
+  transition: box-shadow 220ms ease;
+}
+
+/* --- Interactive graph --- */
+.roadmap-canvas {
+  animation: fadeUp 0.6s ease both;
+  background-image: radial-gradient(color-mix(in srgb, var(--accent) 16%, transparent) 1px, transparent 1px);
+  background-size: 26px 26px;
+  background-position: center;
+  border-radius: 30px;
+}
+
+.roadmap-connector {
+  animation: connectorIn 0.6s ease both, connectorFlow 1.4s linear infinite;
+}
+
+.roadmap-node {
+  animation: nodeIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.roadmap-node:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 26px 60px color-mix(in srgb, var(--accent) 34%, transparent);
+}
+
+.roadmap-node.selected {
+  animation: popRing 1.3s ease-out infinite;
+}
+
+.roadmap-order {
+  transition: transform 200ms ease, background 200ms ease;
+}
+
+.roadmap-node:hover .roadmap-order {
+  transform: scale(1.12);
+}
+
+.roadmap-list-item {
+  animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.roadmap-list-item:hover {
+  transform: translateY(-2px);
+}
+
+/* --- Progress shimmer --- */
+.roadmap-progress .progress-fill {
+  position: relative;
+  overflow: hidden;
+}
+
+.roadmap-progress .progress-fill::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  content: '';
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transform: translateX(-120%);
+  width: 60%;
+  animation: shimmer 1.9s ease-in-out infinite;
+}
+
+/* --- Training drawer layered reveal --- */
+.drawerAnim {
+  animation: drawerContentIn 0.42s ease both;
+}
+
+.drawer-head .roadmap-order {
+  animation: floaty 3s ease-in-out infinite;
+}
+
+.training-card,
+.resource-link,
+.content-code,
+.content-tip {
+  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.training-card:hover,
+.resource-link:hover {
+  transform: translateY(-2px);
+}
+
+.rm-icon,
+.drawer-close {
+  transition: transform 200ms ease, background 200ms ease;
+}
+
+.drawer-close:hover {
+  transform: rotate(90deg);
+}
+
+.view-toggle {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+/* --- Course lesson rows --- */
+.lesson-row-item {
+  animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.lesson-main:hover .roadmap-order {
+  transform: scale(1.12);
+}
+
+/* --- Section titles reveal --- */
+.section-title,
+.learning-hero p {
+  animation: fadeUp 0.6s ease both;
+}
+
+.track-filter {
+  animation: fadeUp 0.6s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rm-card,
+  .roadmap-node,
+  .roadmap-list-item,
+  .roadmap-canvas,
+  .roadmap-connector,
+  .drawerAnim,
+  .lesson-row-item,
+  .section-title,
+  .learning-hero p,
+  .track-filter,
+  .learning-hero h1 {
+    animation: none !important;
+  }
+  .roadmap-connector {
+    animation: none !important;
+  }
+  .roadmap-progress .progress-fill::after {
+    display: none;
+  }
+}
