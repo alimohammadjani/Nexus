@@ -1,42 +1,57 @@
 import { useCallback, useEffect, useState } from 'react'
+import type { CSSProperties } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { completeLesson, enrollCourse, fetchCourse, fetchRoadmap } from '../../api/roadmap'
-import type { Course as CourseType, Lesson, Roadmap as RoadmapType } from '../../types/roadmap'
+import { completeLesson, enrollCourse, fetchCourse } from '../../api/roadmap'
+import type { Course as CourseType, Lesson } from '../../types/roadmap'
+import { renderContent } from '../../utils/content'
 import { useAuth } from '../../store/authStore'
 import { useUI } from '../../store/uiStore'
 import Loading from '../../components/Loading'
 import ErrorState from '../../components/ErrorState'
+import './learning.css'
 
 export default function Course() {
-  const { id, type } = useParams()
+  const { id } = useParams()
   const { isAuthenticated } = useAuth()
   const { notify } = useUI()
   const [course, setCourse] = useState<CourseType | null>(null)
-  const [roadmap, setRoadmap] = useState<RoadmapType | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [enrolled, setEnrolled] = useState(false)
+  const [selected, setSelected] = useState<Lesson | null>(null)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [doneLessons, setDoneLessons] = useState<number[]>([])
 
   const load = useCallback(async () => {
     if (!id) return
     setLoading(true)
     setError(null)
     try {
-      if (type === 'course') {
-        setCourse(await fetchCourse(Number(id)))
-      } else {
-        setRoadmap(await fetchRoadmap(Number(id)))
-      }
+      const data = await fetchCourse(Number(id))
+      setCourse(data)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'محتوا پیدا نشد.')
+      setError(err instanceof Error ? err.message : 'دوره پیدا نشد.')
     } finally {
       setLoading(false)
     }
-  }, [id, type])
+  }, [id])
 
   useEffect(() => {
     void load()
   }, [load])
+
+  function openLesson(lesson: Lesson) {
+    setSelected(lesson)
+    setDrawerOpen(true)
+  }
+
+  const selectedIndex = selected && course ? course.lessons.findIndex((l) => l.id === selected.id) : -1
+
+  function goToLesson(delta: number) {
+    if (!course || selectedIndex < 0) return
+    const next = course.lessons[selectedIndex + delta]
+    if (next) setSelected(next)
+  }
 
   async function handleEnroll() {
     if (!course || !isAuthenticated) return
@@ -53,6 +68,7 @@ export default function Course() {
     if (!course || !isAuthenticated) return
     try {
       await completeLesson(course.id, lesson.id)
+      setDoneLessons((prev) => (prev.includes(lesson.id) ? prev : [...prev, lesson.id]))
       notify('پیشرفت ذخیره شد!')
     } catch (err) {
       notify(err instanceof Error ? err.message : 'ذخیره پیشرفت ناموفق بود.', 'error')
@@ -61,67 +77,146 @@ export default function Course() {
 
   if (loading) return <Loading />
   if (error) return <ErrorState message={error} onRetry={load} />
-
-  if (roadmap) {
-    return (
-      <div className="content-section">
-        <Link to="/learning" className="ghost-link">← بازگشت به یادگیری</Link>
-        <h1 className="page-title" style={{ marginTop: 18 }}>{roadmap.title}</h1>
-        <p className="page-subtitle">{roadmap.subtitle ?? roadmap.description}</p>
-        <div className="list-stack">
-          {roadmap.stages.map((stage) => (
-            <div className="panel list-item" key={stage.id}>
-              <div>
-                <div className="row-meta">
-                  <span className="badge badge-purple">{stage.order}</span>
-                </div>
-                <h3 style={{ margin: '8px 0 4px' }}>{stage.title}</h3>
-                <p>{stage.description}</p>
-                {stage.resources && <p className="help-text">منابع: {stage.resources}</p>}
-                {stage.project && <p className="help-text">پروژه: {stage.project}</p>}
-              </div>
-              {stage.checkpoint && <span className="badge badge-amber">{stage.checkpoint}</span>}
-            </div>
-          ))}
-        </div>
-      </div>
-    )
-  }
-
   if (!course) return <ErrorState message="دوره پیدا نشد." onRetry={load} />
 
   return (
-    <div className="content-section">
-      <Link to="/learning" className="ghost-link">← بازگشت به یادگیری</Link>
-      <div className="page-heading" style={{ marginTop: 18 }}>
-        <div>
-          <div className="row-meta">
-            <span className="badge badge-purple">{course.category}</span>
-            <span className="badge badge-cyan">{course.level}</span>
-            <span className={course.is_free ? 'badge badge-green' : 'badge badge-amber'}>
-              {course.is_free ? 'رایگان' : `${course.price.toLocaleString('fa-IR')} تومان`}
-            </span>
+    <div className="content-section" style={{ '--accent': '#06b6d4' } as CSSProperties}>
+      <Link to="/learning" className="ghost-link">
+        ← بازگشت به یادگیری
+      </Link>
+
+      <div className="roadmap-header" style={{ marginTop: 18 }}>
+        <div className="roadmap-title">
+          <span className="rm-icon" style={{ background: '#06b6d4' }}>
+            📚
+          </span>
+          <div className="roadmap-title-text">
+            <h1>{course.title}</h1>
+            <p>{course.description}</p>
           </div>
-          <h1 className="page-title">{course.title}</h1>
-          <p className="page-subtitle">{course.description}</p>
         </div>
-        <button className="primary-button" onClick={handleEnroll} type="button">
-          {enrolled ? 'ثبت‌نام شده' : 'ثبت‌نام در دوره'}
+        <div className="roadmap-tools">
+          <span className="badge badge-purple">{course.category}</span>
+          <span className="badge badge-cyan">{course.level}</span>
+          <span className={course.is_free ? 'badge badge-green' : 'badge badge-amber'}>
+            {course.is_free ? 'رایگان' : `${course.price.toLocaleString('fa-IR')} تومان`}
+          </span>
+        </div>
+      </div>
+
+      <div className="roadmap-progress">
+        <div className="roadmap-progress-label">
+          {course.duration_hours} ساعت آموزش • {course.lessons.length} درس • مدرس: {course.instructor_name ?? 'تیم DevHub'}
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 20 }}>
+        <button className="primary-button" type="button" onClick={handleEnroll}>
+          {enrolled ? 'ثبت‌نام شده ✓' : 'ثبت‌نام در دوره'}
         </button>
       </div>
 
       <div className="panel">
         <h2 className="panel-title">درس‌ها</h2>
-        {course.lessons.map((lesson) => (
-          <div className="lesson-row" key={lesson.id}>
-            <span className="badge badge-cyan">{lesson.order}</span>
-            <div><strong>{lesson.title}</strong>{lesson.content && <p className="help-text">{lesson.content}</p>}</div>
-            <button className="secondary-button" type="button" onClick={() => handleCompleteLesson(lesson)}>
-              علامت‌گذاری تکمیل
-            </button>
-          </div>
-        ))}
+        <div className="lesson-list">
+          {course.lessons.map((lesson) => {
+            const done = doneLessons.includes(lesson.id)
+            return (
+              <div className="lesson-row-item" key={lesson.id}>
+                <button type="button" className="lesson-main" onClick={() => openLesson(lesson)}>
+                  <span className={`roadmap-order ${done ? 'done' : ''}`}>{lesson.order}</span>
+                  <span className="lesson-info">
+                    <strong>{lesson.title}</strong>
+                    {lesson.content && <span className="help-text">کلیک کنید تا آموزش باز شود</span>}
+                  </span>
+                  <span className="help-text">{lesson.duration_minutes} دقیقه</span>
+                </button>
+                <button
+                  className="secondary-button"
+                  type="button"
+                  onClick={() => handleCompleteLesson(lesson)}
+                >
+                  {done ? 'تکمیل شد ✓' : 'علامت‌گذاری تکمیل'}
+                </button>
+              </div>
+            )
+          })}
+        </div>
       </div>
+
+      <div className={`drawer-backdrop ${drawerOpen ? 'open' : ''}`} onClick={() => setDrawerOpen(false)} />
+      <aside className={`training-drawer ${drawerOpen ? 'open' : ''}`} aria-hidden={!drawerOpen}>
+        {selected && (
+          <>
+            <div className="drawer-head">
+              <div>
+                <h2>{selected.title}</h2>
+                <p className="help-text">{selected.duration_minutes} دقیقه مطالعه</p>
+              </div>
+              <button className="drawer-close" type="button" onClick={() => setDrawerOpen(false)} aria-label="بستن">
+                ✕
+              </button>
+            </div>
+            <div className="drawer-body">
+              {selected.content ? (
+                <div className="training-section">
+                  <span className="label">آموزش درس</span>
+                  {renderContent(selected.content)}
+                </div>
+              ) : (
+                <div className="training-section">
+                  <div className="training-card">
+                    <p>برای این درس محتوای متنی ثبت نشده است.</p>
+                  </div>
+                </div>
+              )}
+              {selected.video_url && (
+                <div className="training-section">
+                  <span className="label">ویدیو</span>
+                  <a className="resource-link" href={selected.video_url} target="_blank" rel="noreferrer noopener">
+                    <span className="rl-dot" />
+                    <span className="rl-text">مشاهده ویدیو آموزشی</span>
+                  </a>
+                </div>
+              )}
+            </div>
+
+            {selectedIndex >= 0 && (
+              <div className="drawer-nav">
+                <button
+                  type="button"
+                  className="nav-btn"
+                  onClick={() => goToLesson(-1)}
+                  disabled={selectedIndex === 0}
+                >
+                  → درس قبلی
+                </button>
+                <span className="drawer-nav-count">
+                  درس {selectedIndex + 1} از {course.lessons.length}
+                </span>
+                <button
+                  type="button"
+                  className="nav-btn"
+                  onClick={() => goToLesson(1)}
+                  disabled={selectedIndex === course.lessons.length - 1}
+                >
+                  درس بعدی ←
+                </button>
+              </div>
+            )}
+
+            <div className="drawer-foot">
+              <button
+                type="button"
+                className={`done-btn ${doneLessons.includes(selected.id) ? 'active' : ''}`}
+                onClick={() => handleCompleteLesson(selected)}
+              >
+                {doneLessons.includes(selected.id) ? '✓ تکمیل شد — برداشتن علامت' : 'علامت‌گذاری به‌عنوان تکمیل‌شده'}
+              </button>
+            </div>
+          </>
+        )}
+      </aside>
     </div>
   )
 }

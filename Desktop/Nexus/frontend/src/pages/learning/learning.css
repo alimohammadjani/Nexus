@@ -1,0 +1,840 @@
+/* =========================================================================
+   Learning section — roadmap.sh style interactive roadmaps
+   ========================================================================= */
+
+.learning-hero {
+  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: space-between;
+  margin-bottom: 26px;
+}
+
+.learning-hero h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  letter-spacing: -0.05em;
+  margin: 0;
+}
+
+.learning-hero p {
+  color: var(--muted);
+  margin: 8px 0 0;
+  max-width: 640px;
+}
+
+.track-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.track-filter button {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+  padding: 10px 16px;
+  transition: all 160ms ease;
+}
+
+.track-filter button.active,
+.track-filter button:hover {
+  border-color: color-mix(in srgb, var(--accent, var(--primary)) 60%, white 10%);
+  background: color-mix(in srgb, var(--accent, var(--primary)) 18%, rgba(255, 255, 255, 0.06));
+  color: white;
+}
+
+.section-title {
+  color: var(--muted-2);
+  font-size: 0.84rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  margin: 30px 0 16px;
+  text-transform: uppercase;
+}
+
+/* ---- Roadmap cards (landing) ---- */
+
+.rm-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.rm-card {
+  backdrop-filter: blur(22px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 22px;
+  position: relative;
+  transition: transform 180ms ease, border-color 180ms ease;
+}
+
+.rm-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
+  transform: translateY(-5px);
+}
+
+.rm-card::before {
+  background: radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 40%, transparent), transparent 16rem);
+  content: '';
+  inset: 0;
+  opacity: 0.7;
+  pointer-events: none;
+  position: absolute;
+}
+
+.rm-card > * {
+  position: relative;
+}
+
+.rm-card-head {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.rm-icon {
+  align-items: center;
+  border-radius: 16px;
+  color: white;
+  display: inline-flex;
+  font-size: 22px;
+  font-weight: 900;
+  height: 46px;
+  justify-content: center;
+  width: 46px;
+}
+
+.rm-card h3 {
+  font-size: 1.3rem;
+  letter-spacing: -0.03em;
+  margin: 16px 0 8px;
+}
+
+.rm-card p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.8;
+  margin: 0;
+  min-height: 64px;
+}
+
+/* mini node preview */
+.rm-preview {
+  align-items: flex-start;
+  display: flex;
+  gap: 10px;
+  margin: 18px 0 4px;
+}
+
+.rm-preview-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rm-preview-node {
+  align-items: center;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  border-radius: 12px;
+  color: var(--accent);
+  display: flex;
+  font-size: 11px;
+  font-weight: 900;
+  height: 26px;
+  justify-content: center;
+  width: 26px;
+}
+
+.rm-preview-line {
+  background: linear-gradient(var(--accent), var(--accent));
+  height: 16px;
+  opacity: 0.5;
+  width: 2px;
+}
+
+.rm-preview-text {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: center;
+}
+
+.rm-meta {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.rm-meta .help-text {
+  margin: 0;
+}
+
+/* ---- Interactive roadmap graph ---- */
+
+.roadmap-header {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.roadmap-header .rm-icon {
+  height: 54px;
+  width: 54px;
+  font-size: 26px;
+}
+
+.roadmap-title {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+}
+
+.roadmap-title-text h1 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  letter-spacing: -0.04em;
+  margin: 0;
+}
+
+.roadmap-title-text p {
+  color: var(--muted);
+  margin: 6px 0 0;
+  max-width: 560px;
+}
+
+.roadmap-tools {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.view-toggle {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+  padding: 10px 16px;
+  transition: all 160ms ease;
+}
+
+.view-toggle.active {
+  background: color-mix(in srgb, var(--accent) 18%, rgba(255, 255, 255, 0.06));
+  border-color: color-mix(in srgb, var(--accent) 60%, white 10%);
+  color: white;
+}
+
+.roadmap-progress {
+  margin-bottom: 14px;
+}
+
+.roadmap-progress .progress-track {
+  height: 12px;
+}
+
+.roadmap-progress-label {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.roadmap-progress-label b {
+  color: var(--text);
+}
+
+.roadmap-hint {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed var(--border);
+  border-radius: 16px;
+  color: var(--muted);
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+}
+
+.roadmap-canvas-wrap {
+  overflow-x: auto;
+  padding-bottom: 12px;
+}
+
+.roadmap-canvas {
+  margin: 0 auto;
+  position: relative;
+}
+
+.roadmap-connector {
+  fill: none;
+  pointer-events: none;
+  stroke: color-mix(in srgb, var(--accent) 55%, var(--border));
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 2 9;
+}
+
+.roadmap-node {
+  align-items: flex-start;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 108px;
+  padding: 16px 18px;
+  position: absolute;
+  text-align: start;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+  width: 270px;
+  z-index: 2;
+}
+
+.roadmap-node:hover {
+  border-color: color-mix(in srgb, var(--accent) 60%, white 10%);
+  box-shadow: 0 22px 55px color-mix(in srgb, var(--accent) 28%, transparent);
+  transform: translateY(-3px);
+}
+
+.roadmap-node.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent), 0 22px 55px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.roadmap-node.done {
+  border-color: color-mix(in srgb, var(--success) 55%, var(--border));
+}
+
+.roadmap-node-top {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.roadmap-order {
+  align-items: center;
+  background: color-mix(in srgb, var(--accent) 22%, rgba(255, 255, 255, 0.04));
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--border));
+  border-radius: 12px;
+  color: #fff;
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 950;
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+  flex-shrink: 0;
+}
+
+.roadmap-node.done .roadmap-order {
+  background: var(--success);
+  border-color: var(--success);
+}
+
+.roadmap-order.done {
+  background: var(--success);
+  border-color: var(--success);
+  color: #06281c;
+}
+
+.roadmap-node-title {
+  font-size: 1.02rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.roadmap-node-desc {
+  color: var(--muted-2);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  margin: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.roadmap-node-check {
+  margin-inline-start: auto;
+  color: var(--success);
+  font-size: 14px;
+  font-weight: 950;
+}
+
+/* list view */
+.roadmap-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.roadmap-list-item {
+  align-items: center;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  cursor: pointer;
+  display: flex;
+  gap: 14px;
+  padding: 16px 18px;
+  text-align: start;
+  transition: border-color 160ms ease, transform 160ms ease;
+  width: 100%;
+}
+
+.roadmap-list-item:hover {
+  border-color: color-mix(in srgb, var(--accent) 60%, white 10%);
+  transform: translateY(-2px);
+}
+
+.roadmap-list-item.done {
+  border-color: color-mix(in srgb, var(--success) 50%, var(--border));
+}
+
+.roadmap-list-item .roadmap-node-desc {
+  -webkit-line-clamp: 1;
+}
+
+/* ---- Drawer (training detail) ---- */
+
+.drawer-backdrop {
+  background: rgba(4, 5, 14, 0.62);
+  backdrop-filter: blur(3px);
+  inset: 0;
+  opacity: 0;
+  position: fixed;
+  transition: opacity 220ms ease;
+  z-index: 40;
+}
+
+.drawer-backdrop.open {
+  opacity: 1;
+}
+
+.training-drawer {
+  background: linear-gradient(180deg, rgba(16, 19, 42, 0.96), rgba(10, 12, 28, 0.98));
+  border-inline-start: 1px solid var(--border-strong);
+  box-shadow: -30px 0 80px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 480px;
+  position: fixed;
+  inset-inline-end: 0;
+  top: 0;
+  transform: translateX(110%);
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  width: 94vw;
+  z-index: 41;
+}
+
+.training-drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-head {
+  align-items: flex-start;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 14px;
+  padding: 22px 24px;
+}
+
+.drawer-head .roadmap-order {
+  height: 38px;
+  width: 38px;
+  font-size: 15px;
+}
+
+.drawer-head h2 {
+  font-size: 1.5rem;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.drawer-head .help-text {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.drawer-close {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 20px;
+  height: 40px;
+  margin-inline-start: auto;
+  width: 40px;
+  flex-shrink: 0;
+}
+
+.drawer-body {
+  overflow-y: auto;
+  padding: 22px 24px 28px;
+}
+
+.training-section {
+  margin-bottom: 24px;
+}
+
+.training-section > .label {
+  color: var(--muted-2);
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.content-blocks {
+  color: var(--text);
+  line-height: 1.95;
+}
+
+.content-paragraph {
+  color: var(--muted);
+  margin: 0 0 14px;
+  white-space: pre-line;
+}
+
+.content-heading {
+  color: var(--text);
+  font-size: 1.05rem;
+  font-weight: 950;
+  letter-spacing: -0.02em;
+  margin: 22px 0 10px;
+}
+
+.content-list {
+  color: var(--muted);
+  display: grid;
+  gap: 9px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.content-list li {
+  align-items: flex-start;
+  display: flex;
+  gap: 10px;
+  line-height: 1.8;
+}
+
+.content-list li::before {
+  background: var(--accent);
+  border-radius: 999px;
+  content: '';
+  flex-shrink: 0;
+  height: 7px;
+  margin-top: 11px;
+  width: 7px;
+}
+
+.content-ordered {
+  color: var(--muted);
+  counter-reset: step;
+  display: grid;
+  gap: 11px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.content-ordered li {
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  display: flex;
+  gap: 12px;
+  line-height: 1.8;
+  padding: 12px 14px;
+}
+
+.content-ordered li::before {
+  align-items: center;
+  background: var(--accent);
+  border-radius: 999px;
+  color: #fff;
+  content: counter(step);
+  counter-increment: step;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 950;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+.content-code {
+  background: #05060f;
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  direction: ltr;
+  margin: 0 0 16px;
+  overflow-x: auto;
+  padding: 14px 16px;
+  text-align: left;
+}
+
+.content-code code {
+  color: #c7d2fe;
+  direction: ltr;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.86rem;
+  line-height: 1.7;
+  white-space: pre;
+}
+
+.content-tip {
+  background: color-mix(in srgb, var(--accent) 12%, rgba(255, 255, 255, 0.04));
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border));
+  border-radius: 14px;
+  color: var(--text);
+  line-height: 1.85;
+  margin: 0 0 16px;
+  padding: 13px 16px;
+}
+
+.content-tip::before {
+  content: '💡 نکته: ';
+  font-weight: 950;
+  color: var(--accent);
+}
+
+.code-inline {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.86em;
+  padding: 1px 6px;
+}
+
+.training-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px 18px;
+}
+
+.training-card.accent {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  background: color-mix(in srgb, var(--accent) 10%, rgba(255, 255, 255, 0.04));
+}
+
+.training-card.green {
+  border-color: color-mix(in srgb, var(--success) 40%, var(--border));
+  background: color-mix(in srgb, var(--success) 10%, rgba(255, 255, 255, 0.04));
+}
+
+.training-card strong {
+  color: var(--text);
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+
+.training-card p {
+  color: var(--muted);
+  line-height: 1.8;
+  margin: 0;
+}
+
+.resource-links {
+  display: grid;
+  gap: 10px;
+}
+
+.resource-link {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  display: flex;
+  gap: 12px;
+  padding: 12px 14px;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.resource-link:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.resource-link .rl-dot {
+  background: var(--accent);
+  border-radius: 999px;
+  height: 9px;
+  width: 9px;
+  flex-shrink: 0;
+}
+
+.resource-link .rl-text {
+  font-weight: 800;
+}
+
+.resource-link .rl-sub {
+  color: var(--muted-2);
+  font-size: 0.78rem;
+  margin-top: 2px;
+}
+
+.drawer-foot {
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+  padding: 18px 24px;
+}
+
+.drawer-nav {
+  align-items: center;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  padding: 14px 24px;
+}
+
+.drawer-nav-count {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.nav-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  padding: 9px 16px;
+  transition: all 160ms ease;
+}
+
+.nav-btn:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+  color: #fff;
+}
+
+.nav-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.done-btn {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: 900;
+  gap: 8px;
+  justify-content: center;
+  min-height: 50px;
+  padding: 0 22px;
+  transition: all 160ms ease;
+  width: 100%;
+}
+
+.done-btn.active {
+  background: color-mix(in srgb, var(--success) 22%, rgba(255, 255, 255, 0.06));
+  border-color: var(--success);
+  color: #d1fae5;
+}
+
+.lesson-list {
+  display: grid;
+  gap: 10px;
+}
+
+.lesson-row-item {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr auto;
+  padding: 14px 16px;
+  transition: border-color 160ms ease;
+}
+
+.lesson-row-item:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+
+.lesson-main {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  gap: 14px;
+  text-align: start;
+  width: 100%;
+}
+
+.lesson-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lesson-info strong {
+  font-size: 1.02rem;
+}
+
+@media (max-width: 980px) {
+  .rm-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .rm-grid {
+    grid-template-columns: 1fr;
+  }
+}
