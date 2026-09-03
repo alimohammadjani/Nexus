@@ -58,3 +58,37 @@ def auth_headers(client):
         "/api/v1/auth/login", json={"email": "test@example.com", "password": "password123"}
     ).json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture
+def db_session():
+    db = TestingSessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+@pytest.fixture
+def admin_headers(client):
+    from app.core.security import hash_password
+    from app.models.user import User
+
+    db = TestingSessionLocal()
+    db.add(
+        User(
+            email="admin@example.com",
+            full_name="Admin User",
+            password_hash=hash_password("password123"),
+            role="admin",
+        )
+    )
+    db.commit()
+    db.close()
+
+    resp = client.post(
+        "/api/v1/auth/login", json={"email": "admin@example.com", "password": "password123"}
+    )
+    assert resp.status_code == 200, resp.text
+    token = resp.json()["access_token"]
+    return {"Authorization": f"Bearer {token}"}
