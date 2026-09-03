@@ -92,3 +92,18 @@ def admin_headers(client):
     assert resp.status_code == 200, resp.text
     token = resp.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture
+def register_user(client):
+    def _register(email: str, password: str = "password123", full_name: str = "Other User"):
+        client.post(
+            "/api/v1/auth/register",
+            json={"email": email, "full_name": full_name, "password": password},
+        )
+        token = client.post(
+            "/api/v1/auth/login", json={"email": email, "password": password}
+        ).json()["access_token"]
+        return {"Authorization": f"Bearer {token}"}
+
+    return _register
