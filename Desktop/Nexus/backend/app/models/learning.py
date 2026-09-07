@@ -31,6 +31,7 @@ class RoadmapStage(Base):
     order: Mapped[int] = Column(Integer, default=0, nullable=False)
     title: Mapped[str] = Column(String(255), nullable=False)
     description: Mapped[str | None] = Column(Text, nullable=True)
+    content: Mapped[str | None] = Column(Text, nullable=True)
     resources: Mapped[str | None] = Column(Text, nullable=True)
     project: Mapped[str | None] = Column(Text, nullable=True)
     checkpoint: Mapped[str | None] = Column(Text, nullable=True)

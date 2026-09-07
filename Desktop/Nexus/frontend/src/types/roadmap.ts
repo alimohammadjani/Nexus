@@ -4,6 +4,7 @@ export interface RoadmapStage {
   order: number
   title: string
   description?: string | null
+  content?: string | null
   resources?: string | null
   project?: string | null
   checkpoint?: string | null

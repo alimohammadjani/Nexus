@@ -12,6 +12,7 @@ class RoadmapStageBase(BaseModel):
     order: int = 0
     title: str = Field(..., min_length=1, max_length=255)
     description: str | None = None
+    content: str | None = None
     resources: str | None = None
     project: str | None = None
     checkpoint: str | None = None

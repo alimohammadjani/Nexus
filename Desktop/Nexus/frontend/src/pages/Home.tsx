@@ -1,5 +1,6 @@
-import { useMemo, useState, type CSSProperties } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
+import './home.css'
 
 type Track = {
   id: string
@@ -93,12 +94,47 @@ export default function Home() {
   const [activeTrackId, setActiveTrackId] = useState(tracks[0].id)
   const activeTrack = useMemo(() => tracks.find((t) => t.id === activeTrackId) ?? tracks[0], [activeTrackId])
 
+  const [scrollProgress, setScrollProgress] = useState(0)
+  useEffect(() => {
+    const onScroll = () => {
+      const el = document.documentElement
+      const max = el.scrollHeight - el.clientHeight
+      setScrollProgress(max > 0 ? el.scrollTop / max : 0)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    const els = Array.from(document.querySelectorAll('.reveal'))
+    if (!('IntersectionObserver' in window)) {
+      els.forEach((el) => el.classList.add('is-visible'))
+      return
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible')
+            io.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
+    )
+    els.forEach((el) => io.observe(el))
+    return () => io.disconnect()
+  }, [])
+
   return (
     <div className="app-shell" dir="rtl">
+      <div className="scroll-progress" style={{ transform: `scaleX(${scrollProgress})` }} />
       <section id="hero" className="hero-section section-grid">
+      <div className="hero-aurora" aria-hidden="true" />
         <div className="hero-copy">
           <span className="eyebrow">پلتفرم یکپارچه رشد برنامه‌نویس‌ها</span>
-          <h1>یاد بگیر، پورتفولیو بساز، کار پیدا کن و ابزار بفروش.</h1>
+          <h1 className="home-hero-title">یاد بگیر، پورتفولیو بساز، کار پیدا کن و ابزار بفروش.</h1>
           <p className="hero-lead">
             DevHub مسیر کامل «از صفر تا استخدام» را در یک محصول حرفه‌ای جمع کرده؛ آموزش رایگان، پروژه واقعی، فرصت کاری، استخدام نیرو و مارکت ابزار همه به هم وصل‌اند.
           </p>
@@ -136,9 +172,13 @@ export default function Home() {
           <div className="floating-card card-left"><span>Skill Verified</span><strong>UI Engineer</strong></div>
           <div className="floating-card card-right"><span>Match Job</span><strong>۹۴٪</strong></div>
         </div>
+        <div className="scroll-cue" aria-hidden="true">
+          <span>اسکرول</span>
+          <span className="mouse" />
+        </div>
       </section>
 
-      <section className="pillars-section" aria-label="چهار بخش اصلی DevHub">
+      <section className="pillars-section reveal stagger" aria-label="چهار بخش اصلی DevHub">
         {pillars.map((pillar) => (
           <Link className="pillar-card" to={pillar.to} key={pillar.title}>
             <div className="pillar-icon">{pillar.icon}</div>
@@ -149,7 +189,7 @@ export default function Home() {
         ))}
       </section>
 
-      <section id="learning" className="content-section learning-section">
+      <section id="learning" className="content-section learning-section reveal">
         <div className="section-heading">
           <span className="eyebrow">بخش ۱ — یادگیری رایگان</span>
           <h2>Roadmap تعاملی که مستقیم به پورتفولیو وصل می‌شود.</h2>
@@ -185,7 +225,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="work" className="content-section split-section">
+      <section id="work" className="content-section split-section reveal">
         <div className="section-heading align-start">
           <span className="eyebrow">بخش ۲ — درخواست کار</span>
           <h2>از پروژه تمرینی تا درآمد واقعی، با پروفایلی که خودکار پر می‌شود.</h2>
@@ -202,7 +242,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="hiring" className="content-section hiring-section">
+      <section id="hiring" className="content-section hiring-section reveal stagger">
         <div className="hiring-card">
           <div className="section-heading align-start">
             <span className="eyebrow">بخش ۳ — استخدام نیرو</span>
@@ -223,7 +263,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="market" className="content-section market-section">
+      <section id="market" className="content-section market-section reveal stagger">
         <div className="section-heading">
           <span className="eyebrow">بخش ۴ — مارکت ابزار</span>
           <h2>هر توسعه‌دهنده می‌تواند محصول دیجیتال خودش را بفروشد.</h2>
@@ -239,7 +279,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="content-section advantage-section">
+      <section className="content-section advantage-section reveal">
         <div className="section-heading"><span className="eyebrow">چرا منحصربه‌فرده؟</span><h2>DevHub چهار محصول جدا را به یک مسیر درآمدزا تبدیل می‌کند.</h2></div>
         <div className="compare-grid">
           <article><span>LinkedIn</span><p>جاب دارد، اما آموزش و پروژه واقعی ندارد.</p></article>
@@ -249,7 +289,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="start" className="cta-section">
+      <section id="start" className="cta-section reveal">
         <div><span className="eyebrow">مدل درآمدی آماده رشد</span><h2>کمیسیون مارکت، آگهی استخدام پریمیوم و ۱۰٪ کمیسیون پروژه پولی.</h2><p>یک backend کامل و رابط حرفه‌ای برای معرفی محصول، جذب توسعه‌دهنده و متقاعد کردن کارفرماها.</p></div>
         <Link className="primary-button" to="/register">شروع مسیر از امروز</Link>
       </section>
