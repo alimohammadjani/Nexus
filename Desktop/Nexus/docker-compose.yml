@@ -17,7 +17,7 @@ services:
       timeout: 5s
       retries: 10
 
-  api:
+  backend:
     build:
       context: ./backend
     environment:
@@ -39,7 +39,7 @@ services:
     ports:
       - "3000:80"
     depends_on:
-      - api
+      - backend
 
 volumes:
   pgdata:
